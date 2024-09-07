@@ -1,0 +1,7 @@
+name: MCMgr
+version: '${project.version}'
+main: cloud.thehsi.mcmgr.Main
+api-version: '1.21'
+commands:
+  menu:
+    permission: cloud.thehsi.admin
