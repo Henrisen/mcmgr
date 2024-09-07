@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +63,7 @@ public class Menu implements CommandExecutor, Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String command_str, @Nonnull String[] args) {
         Inventory inv = Bukkit.getServer().createInventory((Player) commandSender, 9 * 6, "Management Console");
 
         generateMgrInventory(inv);
@@ -80,7 +81,7 @@ public class Menu implements CommandExecutor, Listener {
 
         ItemStack cursor = event.getCurrentItem();
 
-        List<Material> blocks = new ArrayList<Material>();
+        List<Material> blocks = new ArrayList<>();
 
         for (Material m : Material.values()) {
             if (m.isBlock() & !m.isAir()) blocks.add(m);
@@ -107,13 +108,10 @@ public class Menu implements CommandExecutor, Listener {
             p.closeInventory();
             for (int x = 0; x < 16; x++) {
                 final int gx = x;
-                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int y = c.getWorld().getMaxHeight(); y > c.getWorld().getMinHeight() - 1; y--) {
-                            for (int z = 0; z < 16; z++) {
-                                Objects.requireNonNull(l.getWorld()).getBlockAt(c.getX() * 16 + gx, y, c.getZ() * 16 + z).setType(cursor.getType());
-                            }
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    for (int y = c.getWorld().getMaxHeight(); y > c.getWorld().getMinHeight() - 1; y--) {
+                        for (int z = 0; z < 16; z++) {
+                            Objects.requireNonNull(l.getWorld()).getBlockAt(c.getX() * 16 + gx, y, c.getZ() * 16 + z).setType(cursor.getType());
                         }
                     }
                 }, x);
@@ -148,6 +146,10 @@ public class Menu implements CommandExecutor, Listener {
                     event.getInventory().setItem(19, itm);
 
                     break;
+                case "":
+                    throw new IllegalStateException("Empty Value");
+                default:
+                    throw new IllegalStateException("Unexpected value: " + Objects.requireNonNull(cursor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "mcmgr_tab"), PersistentDataType.STRING)));
             }
         }else if (cursor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "is_mcmgr_action_item"))) {
             if (!cursor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "mcmgr_action"), PersistentDataType.STRING)) return;
@@ -156,13 +158,10 @@ public class Menu implements CommandExecutor, Listener {
                 case "world_management_remove_current_chunk":
                     for (int x = 0; x < 16; x++) {
                         final int gx = x;
-                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                for (int y = c.getWorld().getMaxHeight(); y > c.getWorld().getMinHeight()-1; y--) {
-                                    for (int z = 0; z < 16; z++) {
-                                        Objects.requireNonNull(l.getWorld()).getBlockAt(c.getX() * 16 + gx, y, c.getZ() * 16 + z).setType(Material.AIR);
-                                    }
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            for (int y = c.getWorld().getMaxHeight(); y > c.getWorld().getMinHeight()-1; y--) {
+                                for (int z = 0; z < 16; z++) {
+                                    Objects.requireNonNull(l.getWorld()).getBlockAt(c.getX() * 16 + gx, y, c.getZ() * 16 + z).setType(Material.AIR);
                                 }
                             }
                         }, x);
