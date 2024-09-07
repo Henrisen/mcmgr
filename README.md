@@ -1,4 +1,4 @@
-# mcmgr
+# MCMgr
 
 [![Maven Package](https://github.com/Henrisen/mcmgr/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/Henrisen/mcmgr/actions/workflows/maven-publish.yml)
 
