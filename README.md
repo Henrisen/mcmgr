@@ -4,7 +4,7 @@
 
 A Minecraft Plugin for Managing you World and Server
 
-## 📖 What's this mod?
+## 📖 What's this Plugin?
 This is a Plugin aiming to Improve every Admins experoence when managing a server
 Featuring a GUI!
 
